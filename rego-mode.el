@@ -69,9 +69,10 @@
 (defconst rego-mode-doubles "\\_<[+\\-]?[0-9]+\.[0-9]+\\_>")
 (defconst rego-mode-operators (regexp-opt '("==" "!=" "<" ">" "<=" ">=" "+" "-" "*" "/" "&" "|" "=" ":=")))
 (defconst rego-mode-variables "\\([a-zA-Z][a-zA-Z0-9_]*\\)[[:space:]]*=")
-(defconst rego-mode-variables2 "\\([a-zA-Z][a-zA-Z0-9_]*\\)[[:space:]]*:=")
-(defconst rego-mode-rule-head "\\([a-zA-Z][a-zA-Z0-9_]*\\)[[:space:]]{")
+(defconst rego-mode-restricted-variables "\\([a-zA-Z][a-zA-Z0-9_]*\\)[[:space:]]*:=")
+(defconst rego-mode-rule-head "\\([^:=\n\t].*[^=]\\)[[:space:]]{")
 (defconst rego-mode-expr-call "\\([a-zA-Z][a-zA-Z0-9_]*\\)(")
+
 
 (defconst rego-mode-font-lock-keywords
   `( ;; Variables
@@ -80,7 +81,7 @@
     (,rego-mode-constants . font-lock-constant-face)
     (,rego-mode-operators . font-lock-builtin-face)
     (,rego-mode-variables . (1 font-lock-variable-name-face))
-    (,rego-mode-variables2 . (1 font-lock-variable-name-face))
+    (,rego-mode-restricted-variables . (1 font-lock-variable-name-face))
     (,rego-mode-rule-head . (1 font-lock-variable-name-face))
     (,rego-mode-keywords . font-lock-keyword-face)
     (,rego-mode-doubles . font-lock-constant-face)
@@ -90,13 +91,17 @@
 ;; Create the syntax table for this mode.
 (defvar rego-mode-syntax-table
   (let ((st (make-syntax-table)))
-    (modify-syntax-entry ?\[  "(]" st)
-    (modify-syntax-entry ?\]  ")[" st)
-    (modify-syntax-entry ?\( "()" st)
-    (modify-syntax-entry ?\) ")(" st)
-    (modify-syntax-entry ?\{  "(}" st)
-    (modify-syntax-entry ?\}  "){" st)
+    (modify-syntax-entry ?[  "(]" st)
+    (modify-syntax-entry ?]  ")[" st)
+    (modify-syntax-entry ?( "()" st)
+    (modify-syntax-entry ?) ")(" st)
+    (modify-syntax-entry ?{  "(}" st)
+    (modify-syntax-entry ?}  "){" st)
     (modify-syntax-entry ?\"  "\"" st)
+    (modify-syntax-entry ?`  "\"" st)
+    (modify-syntax-entry ?#  "<" st)
+    (modify-syntax-entry ?#  "<" st)
+    (modify-syntax-entry ?\n  ">" st)
     ;; End
     st)
   "Syntax table used while in `rego-mode'.")
@@ -119,8 +124,16 @@
   (setq-local comment-start "# ")
   (setq-local require-final-newline t)
   (setq-local comment-end "")
-    (when rego-format-at-save
-      (rego-format-on-save-mode)))
+  (add-hook 'before-save-hook #'rego--insert-newline)
+  (when rego-format-at-save
+    (rego-format-on-save-mode)))
+
+;; This is hack for a bug with opa
+(defun rego--insert-newline ()
+  "Insert an empty line below the current line."
+  (save-excursion
+    (end-of-buffer)
+    (open-line 1)))
 
 (defcustom rego-format-at-save t
   "If non-nil, the Rego buffers will be formatted after each save."
@@ -190,3 +203,15 @@ Should be opa or the complete path to your opa executable,
 ;; End:
 
 ;;; rego-mode.el ends here
+
+
+
+
+
+
+
+
+
+
+
+
