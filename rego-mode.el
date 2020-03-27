@@ -47,9 +47,8 @@
 
 (defvar rego-mode-map
   (let ((map (make-sparse-keymap)))
-    ;; (define-key map (kbd "C-c C-b") 'rego-repl-show)
-    ;; (define-key map (kbd "C-c C-f") 'rego-format-buffer)
-    ;; (define-key map (kbd "C-c C-t") 'rego-buffer-type)
+    (define-key map (kbd "C-c C-b") 'rego-repl-show)
+    (define-key map (kbd "C-c C-f") 'rego-format-buffer)
     map)
   "Keymap for using `rego-mode'.")
 
@@ -65,13 +64,10 @@
 ;; define several category of keywords
 (defvar rego-mode-keywords (regexp-opt '("as" "default" "else" "false" "import" "package" "not" "null" "true" "with") 'symbols))
 
-(defvar rego-mode-types
-  (regexp-opt '("String" "Number" "Char" "Array" "Object" "Set" "Boolean") 'symbols))
-
 (defconst rego-mode-constants (regexp-opt '("true" "false") 'symbols))
 (defconst rego-mode-numerals "\\_<[+\\-][1-9]+\\_>")
 (defconst rego-mode-doubles "\\_<[+\\-]?[0-9]+\.[0-9]+\\_>")
-(defconst rego-mode-operators (regexp-opt '("==" "!=" "<" ">" "<=" ">=" "+" "-" "*" "/" "&" "|")))
+(defconst rego-mode-operators (regexp-opt '("==" "!=" "<" ">" "<=" ">=" "+" "-" "*" "/" "&" "|" "=" ":=")))
 (defconst rego-mode-variables "\\([a-zA-Z][a-zA-Z0-9_]*\\)[[:space:]]*=")
 (defconst rego-mode-variables2 "\\([a-zA-Z][a-zA-Z0-9_]*\\)[[:space:]]*:=")
 (defconst rego-mode-rule-head "\\([a-zA-Z][a-zA-Z0-9_]*\\)[[:space:]]{")
@@ -81,7 +77,6 @@
   `( ;; Variables
     ;; (,rego-mode-urls . font-lock-function-name-face)
     (,rego-mode-expr-call . (1 font-lock-function-name-face))
-    ;; (,rego-mode-types . font-lock-type-face)
     (,rego-mode-constants . font-lock-constant-face)
     (,rego-mode-operators . font-lock-builtin-face)
     (,rego-mode-variables . (1 font-lock-variable-name-face))
@@ -99,8 +94,9 @@
     (modify-syntax-entry ?\]  ")[" st)
     (modify-syntax-entry ?\( "()" st)
     (modify-syntax-entry ?\) ")(" st)
-    (modify-syntax-entry ?\{  "(}1nb" st)
-    (modify-syntax-entry ?\}  "){4nb" st)
+    (modify-syntax-entry ?\{  "(}" st)
+    (modify-syntax-entry ?\}  "){" st)
+    (modify-syntax-entry ?\"  "\"" st)
     ;; End
     st)
   "Syntax table used while in `rego-mode'.")
@@ -121,7 +117,10 @@
   (setq-local indent-tabs-mode t)
   (setq-local tab-width 4)
   (setq-local comment-start "# ")
-  (setq-local comment-end ""))
+  (setq-local require-final-newline t)
+  (setq-local comment-end "")
+    (when rego-format-at-save
+      (rego-format-on-save-mode)))
 
 (defcustom rego-format-at-save t
   "If non-nil, the Rego buffers will be formatted after each save."
@@ -148,6 +147,40 @@ Should be opa or the complete path to your opa executable,
   :type 'list
   :group 'rego
   :safe 'listp)
+
+;; REPL
+(defcustom rego-repl-executable "opa"
+  "Location of rego-repl command."
+  :type 'file
+  :group 'rego
+  :safe 'stringp)
+
+(defcustom rego-repl-arguments '("run")
+  "Provide a list of arguments for the formatter e.g. '(\"--ascii\")."
+  :type 'list
+  :group 'rego
+  :safe 'listp)
+
+(defconst rego-prompt-regexp "> ")
+
+(define-derived-mode rego-repl-mode comint-mode "Rego-REPL"
+  "Interactive prompt for Rego."
+  (setq-local comint-prompt-regexp rego-prompt-regexp)
+  (setq-local comint-prompt-read-only t))
+
+(defun rego-repl-show ()
+  "Load the Rego-REPL."
+  (interactive)
+  (pop-to-buffer-same-window
+   (get-buffer-create "*Rego-REPL*"))
+  (unless (comint-check-proc (current-buffer))
+    (rego--make-repl-in-buffer (current-buffer))
+    (rego-repl-mode)))
+
+(defun rego--make-repl-in-buffer (buffer)
+  "Make Rego Repl in BUFFER."
+  (apply 'make-comint-in-buffer (append (list "Rego-REPL" buffer rego-repl-executable '()) rego-repl-arguments)))
+
 
 ;; Provide ourselves:
 (provide 'rego-mode)
