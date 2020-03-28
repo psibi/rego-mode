@@ -87,10 +87,10 @@
 ;; Create the syntax table for this mode.
 (defvar rego-mode-syntax-table
   (let ((st (make-syntax-table)))
-    (modify-syntax-entry ?[  "(]" st)
-    (modify-syntax-entry ?]  ")[" st)
-    (modify-syntax-entry ?( "()" st)
-    (modify-syntax-entry ?) ")(" st)
+    (modify-syntax-entry ?\[  "(]" st)
+    (modify-syntax-entry ?\]  ")[" st)
+    (modify-syntax-entry ?\( "()" st)
+    (modify-syntax-entry ?\) ")(" st)
     (modify-syntax-entry ?{  "(}" st)
     (modify-syntax-entry ?}  "){" st)
     (modify-syntax-entry ?\"  "\"" st)
@@ -128,7 +128,7 @@
 (defun rego--insert-newline ()
   "Insert an empty line below the current line."
   (save-excursion
-    (end-of-buffer)
+    (goto-char (point-max))
     (open-line 1)))
 
 (defcustom rego-format-at-save t
