@@ -118,18 +118,9 @@
   (setq-local indent-tabs-mode t)
   (setq-local tab-width 4)
   (setq-local comment-start "# ")
-  (setq-local require-final-newline t)
   (setq-local comment-end "")
-  (add-hook 'before-save-hook #'rego--insert-newline)
   (when rego-format-at-save
     (rego-format-on-save-mode)))
-
-;; This is hack for a bug with opa
-(defun rego--insert-newline ()
-  "Insert an empty line below the current line."
-  (save-excursion
-    (goto-char (point-max))
-    (open-line 1)))
 
 (defcustom rego-format-at-save t
   "If non-nil, the Rego buffers will be formatted after each save."
@@ -199,4 +190,3 @@ Should be opa or the complete path to your opa executable,
 ;; End:
 
 ;;; rego-mode.el ends here
-

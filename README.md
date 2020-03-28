@@ -26,5 +26,3 @@ language.
 Copyright © 2020 Sibi Prabakaran
 
 Distributed under GNU GPL, version 3.
-
-
