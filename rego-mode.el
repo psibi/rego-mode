@@ -1,4 +1,4 @@
-;;; rego-mode.el --- a major mode for rego language -*- lexical-binding: t -*-
+;;; rego-mode.el --- A major mode for rego language -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2020 Sibi Prabakaran
 
@@ -82,8 +82,7 @@
     (,rego-mode-rule-head . (1 font-lock-variable-name-face))
     (,rego-mode-keywords . font-lock-keyword-face)
     (,rego-mode-doubles . font-lock-constant-face)
-    (,rego-mode-numerals . font-lock-constant-face)
-    ))
+    (,rego-mode-numerals . font-lock-constant-face)))
 
 ;; Create the syntax table for this mode.
 (defvar rego-mode-syntax-table
