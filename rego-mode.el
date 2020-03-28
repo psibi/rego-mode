@@ -1,11 +1,11 @@
-;;; rego-mode.el --- a major mode for rego configuration language -*- lexical-binding: t -*-
+;;; rego-mode.el --- a major mode for rego language -*- lexical-binding: t -*-
 
-;; Copyright (C) 2017 Sibi Prabakaran
+;; Copyright (C) 2020 Sibi Prabakaran
 
 ;; Author: Sibi Prabakaran <sibi@psibi.in>
 ;; Maintainer: Sibi Prabakaran <sibi@psibi.in>
 ;; Keywords: languages
-;; Version: 0.1.3
+;; Version: 0.1.0
 ;; Package-Requires: ((emacs "24.4") (reformatter "0.3"))
 ;; URL: https://github.com/psibi/rego-mode
 
@@ -33,15 +33,14 @@
 ;;
 ;;  - syntax highlighting (font lock),
 ;;
-;;  - Basic indentation, multi line string support
+;;  - Basic indentation, raw and normal string support
 ;;
 ;;  - Automatic formatting on save (configurable)
 ;;
-;;  - Error highlighting
+;;  - REPL support
 ;;
 ;;; Code:
 
-(require 'ansi-color)
 (require 'comint)
 (require 'reformatter)
 
@@ -62,21 +61,19 @@
 ;; https://www.openpolicyagent.org/docs/latest/policy-reference/#grammar
 
 ;; define several category of keywords
-(defvar rego-mode-keywords (regexp-opt '("as" "default" "else" "false" "import" "package" "not" "null" "true" "with") 'symbols))
+(defvar rego-mode-keywords (regexp-opt '("as" "default" "else" "import" "package" "not" "with") 'symbols))
 
-(defconst rego-mode-constants (regexp-opt '("true" "false") 'symbols))
+(defconst rego-mode-constants (regexp-opt '("true" "false" "null") 'symbols))
 (defconst rego-mode-numerals "\\_<[+\\-][1-9]+\\_>")
 (defconst rego-mode-doubles "\\_<[+\\-]?[0-9]+\.[0-9]+\\_>")
 (defconst rego-mode-operators (regexp-opt '("==" "!=" "<" ">" "<=" ">=" "+" "-" "*" "/" "&" "|" "=" ":=")))
-(defconst rego-mode-variables "\\([a-zA-Z][a-zA-Z0-9_]*\\)[[:space:]]*=")
-(defconst rego-mode-restricted-variables "\\([a-zA-Z][a-zA-Z0-9_]*\\)[[:space:]]*:=")
+(defconst rego-mode-variables "\\([a-zA-Z][][a-zA-Z0-9_]*\\)[[:space:]]*= ")
+(defconst rego-mode-restricted-variables "\\([a-zA-Z][a-zA-Z0-9_]*\\)[[:space:]]*:= ")
 (defconst rego-mode-rule-head "\\([^:=\n\t].*[^=]\\)[[:space:]]{")
 (defconst rego-mode-expr-call "\\([a-zA-Z][a-zA-Z0-9_]*\\)(")
 
-
 (defconst rego-mode-font-lock-keywords
   `( ;; Variables
-    ;; (,rego-mode-urls . font-lock-function-name-face)
     (,rego-mode-expr-call . (1 font-lock-function-name-face))
     (,rego-mode-constants . font-lock-constant-face)
     (,rego-mode-operators . font-lock-builtin-face)
@@ -203,15 +200,4 @@ Should be opa or the complete path to your opa executable,
 ;; End:
 
 ;;; rego-mode.el ends here
-
-
-
-
-
-
-
-
-
-
-
 
