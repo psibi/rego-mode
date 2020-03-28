@@ -147,11 +147,11 @@ Should be opa or the complete path to your opa executable,
 
 (reformatter-define rego-format
   :program rego-opa-command
-  :args '("fmt")
+  :args rego-format-arguments
   :group 'rego
   :lighter " OpaFmt")
 
-(defcustom rego-format-arguments nil
+(defcustom rego-format-arguments '("fmt")
   "Provide a list of arguments for the formatter e.g. '(\"--ascii\")."
   :type 'list
   :group 'rego
