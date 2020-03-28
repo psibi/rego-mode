@@ -12,7 +12,7 @@ language.
 
 ## Demo
 
-![Rego mode in Emacs](https://user-images.githubusercontent.com/737477/77818161-47609880-70f6-11ea-9137-7a227f9f25f1.gif "Rego mode in Emacs")
+![Rego mode in Emacs](https://user-images.githubusercontent.com/737477/77818443-43ce1100-70f8-11ea-8bee-913824f24769.gif "Rego mode in Emacs")
 
 ## Features
 
