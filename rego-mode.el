@@ -22,7 +22,7 @@
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -95,7 +95,6 @@
     (modify-syntax-entry ?}  "){" st)
     (modify-syntax-entry ?\"  "\"" st)
     (modify-syntax-entry ?`  "\"" st)
-    (modify-syntax-entry ?#  "<" st)
     (modify-syntax-entry ?#  "<" st)
     (modify-syntax-entry ?\n  ">" st)
     ;; End
@@ -174,13 +173,23 @@ Should be opa or the complete path to your opa executable,
   (pop-to-buffer-same-window
    (get-buffer-create "*Rego-REPL*"))
   (unless (comint-check-proc (current-buffer))
-    (rego--make-repl-in-buffer (current-buffer))
+    (rego--make-repl-in-buffer (current-buffer) rego-repl-arguments)
     (rego-repl-mode)))
 
-(defun rego--make-repl-in-buffer (buffer)
-  "Make Rego Repl in BUFFER."
-  (apply 'make-comint-in-buffer (append (list "Rego-REPL" buffer rego-repl-executable '()) rego-repl-arguments)))
+(defun rego-repl-with-data (data-file)
+  "Same as rego-repl but asks DATA-FILE argument interactively which will be passed to the repl."
+  (interactive "sEnter data file: ")
+  (pop-to-buffer-same-window
+   (get-buffer-create "*Rego-Data-REPL*"))
+  (unless (comint-check-proc (current-buffer))
+    (rego--make-repl-in-buffer (current-buffer) (append rego-repl-arguments (list data-file)))
+    (rego-repl-mode)))
 
+(defun rego--make-repl-in-buffer (buffer rego-repl-args)
+  "Make Rego Repl in BUFFER.
+Optionally accepts REGO-REPL-ARGS which will be passed to the
+repl executable."
+  (apply #'make-comint-in-buffer (append (list "Rego-REPL" buffer rego-repl-executable '()) rego-repl-args)))
 
 ;; Provide ourselves:
 (provide 'rego-mode)
