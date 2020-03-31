@@ -178,7 +178,7 @@ Should be opa or the complete path to your opa executable,
 
 (defun rego-repl-with-data (data-file)
   "Same as rego-repl but asks DATA-FILE argument interactively which will be passed to the repl."
-  (interactive "sEnter data file: ")
+  (interactive "fEnter data file: ")
   (pop-to-buffer-same-window
    (get-buffer-create "*Rego-Data-REPL*"))
   (unless (comint-check-proc (current-buffer))
