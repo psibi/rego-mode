@@ -58,6 +58,12 @@
   :link '(url-link :tag "Site" "https://github.com/psibi/rego-mode")
   :link '(url-link :tag "Repository" "https://github.com/psibi/rego-mode"))
 
+(defcustom rego-format-at-save t
+  "If non-nil, the Rego buffers will be formatted after each save."
+  :type 'boolean
+  :group 'rego
+  :safe 'booleanp)
+
 ;; https://www.openpolicyagent.org/docs/latest/policy-reference/#grammar
 
 ;; define several category of keywords
@@ -114,18 +120,10 @@
   :keymap rego-mode-map
   :syntax-table rego-mode-syntax-table
   (setq font-lock-defaults '(rego-mode-font-lock-keywords))
-  (setq-local indent-tabs-mode t)
-  (setq-local tab-width 4)
   (setq-local comment-start "# ")
   (setq-local comment-end "")
   (when rego-format-at-save
     (rego-format-on-save-mode)))
-
-(defcustom rego-format-at-save t
-  "If non-nil, the Rego buffers will be formatted after each save."
-  :type 'boolean
-  :group 'rego
-  :safe 'booleanp)
 
 (defcustom rego-opa-command "opa"
   "Command used to normalize Rego files.
@@ -135,17 +133,17 @@ Should be opa or the complete path to your opa executable,
   :group 'rego
   :safe 'stringp)
 
-(reformatter-define rego-format
-  :program rego-opa-command
-  :args rego-format-arguments
-  :group 'rego
-  :lighter " OpaFmt")
-
 (defcustom rego-format-arguments '("fmt")
   "Provide a list of arguments for the formatter e.g. '(\"--ascii\")."
   :type 'list
   :group 'rego
   :safe 'listp)
+
+(reformatter-define rego-format
+  :program rego-opa-command
+  :args rego-format-arguments
+  :group 'rego
+  :lighter " OpaFmt")
 
 ;; REPL
 (defcustom rego-repl-executable "opa"
@@ -177,7 +175,7 @@ Should be opa or the complete path to your opa executable,
     (rego-repl-mode)))
 
 (defun rego-repl-with-data (data-file)
-  "Same as rego-repl but asks DATA-FILE argument interactively which will be passed to the repl."
+  "Same as `rego-repl-show' but asks DATA-FILE argument interactively which will be passed to the repl."
   (interactive "fEnter data file: ")
   (pop-to-buffer-same-window
    (get-buffer-create "*Rego-Data-REPL*"))
