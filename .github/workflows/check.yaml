@@ -13,11 +13,12 @@ jobs:
       fail-fast: false
       matrix:
         emacs_version:
+          - 27.1
           - 26.1
           - 26.2
           - 26.3
         ignore_warnings:
-          - true
+          - false
         include:
           - emacs_version: snapshot
             ignore_warnings: false
@@ -30,4 +31,5 @@ jobs:
       with:
         file: rego-mode.el
         ignore_warnings: ${{ matrix.ignore_warnings }}
+        warnings_as_errors: true
 

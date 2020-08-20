@@ -1,7 +1,7 @@
 # rego-mode
 
 [![MELPA](https://melpa.org/packages/rego-mode-badge.svg)](https://melpa.org/#/rego-mode)
-![check](https://github.com/psibi/rego-mode/workflows/check/badge.svg)
+![check](https://github.com/psibi/rego-mode/workflows/check/badge.svg?branch=master)
 
 Emacs Major mode for working
 with [Rego](https://www.openpolicyagent.org/docs/latest/policy-language/) configuration
