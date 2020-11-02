@@ -71,7 +71,7 @@
 
 (defconst rego-mode-constants (regexp-opt '("true" "false" "null") 'symbols))
 (defconst rego-mode-numerals "\\_<[+\\-][1-9]+\\_>")
-(defconst rego-mode-doubles "\\_<[+\\-]?[0-9]+\.[0-9]+\\_>")
+(defconst rego-mode-doubles "\\_<[+\\-]?[0-9]+\\.[0-9]+\\_>")
 (defconst rego-mode-operators (regexp-opt '("==" "!=" "<" ">" "<=" ">=" "+" "-" "*" "/" "&" "|" "=" ":=")))
 (defconst rego-mode-variables "\\([a-zA-Z][][a-zA-Z0-9_]*\\)[[:space:]]*= ")
 (defconst rego-mode-restricted-variables "\\([a-zA-Z][a-zA-Z0-9_]*\\)[[:space:]]*:= ")
