@@ -73,9 +73,9 @@
 (defconst rego-mode-numerals "\\_<[+\\-][1-9]+\\_>")
 (defconst rego-mode-doubles "\\_<[+\\-]?[0-9]+\\.[0-9]+\\_>")
 (defconst rego-mode-operators (regexp-opt '("==" "!=" "<" ">" "<=" ">=" "+" "-" "*" "/" "&" "|" "=" ":=")))
-(defconst rego-mode-variables "\\([a-zA-Z][][a-zA-Z0-9_]*\\)[[:space:]]*= ")
-(defconst rego-mode-restricted-variables "\\([a-zA-Z][a-zA-Z0-9_]*\\)[[:space:]]*:= ")
-(defconst rego-mode-rule-head "\\([^:=\n\t].*[^=]\\)[[:space:]]{")
+(defconst rego-mode-variable "\\([a-zA-Z_][a-zA-Z0-9_]*\\)")
+(defconst rego-mode-variable-assignment (concat rego-mode-variable "[[:space:]]*:?= "))
+(defconst rego-mode-rule-head "^\\([^:=\n\t].*[^=]\\)[[:space:]]{")
 (defconst rego-mode-expr-call "\\([a-zA-Z][a-zA-Z0-9_]*\\)(")
 
 (defconst rego-mode-font-lock-keywords
@@ -83,8 +83,7 @@
     (,rego-mode-expr-call . (1 font-lock-function-name-face))
     (,rego-mode-constants . font-lock-constant-face)
     (,rego-mode-operators . font-lock-builtin-face)
-    (,rego-mode-variables . (1 font-lock-variable-name-face))
-    (,rego-mode-restricted-variables . (1 font-lock-variable-name-face))
+    (,rego-mode-variable-assignment . (1 font-lock-variable-name-face))
     (,rego-mode-rule-head . (1 font-lock-variable-name-face))
     (,rego-mode-keywords . font-lock-keyword-face)
     (,rego-mode-doubles . font-lock-constant-face)
@@ -123,7 +122,12 @@
   (setq-local comment-start "# ")
   (setq-local comment-end "")
   (when rego-format-at-save
-    (rego-format-on-save-mode)))
+    (rego-format-on-save-mode))
+  (setq-local imenu-generic-expression
+    `(
+       ("var" ,(concat "^" rego-mode-variable-assignment) 1)
+       ("rule" ,rego-mode-rule-head 1)
+       )))
 
 (defcustom rego-opa-command "opa"
   "Command used to normalize Rego files.
