@@ -85,7 +85,7 @@
     (,rego-mode-constants . font-lock-constant-face)
     (,rego-mode-operators . font-lock-builtin-face)
     (,rego-mode-variable-assignment . (1 font-lock-variable-name-face))
-    (,rego-mode-rule-head . (1 font-lock-variable-name-face))
+    (,rego-mode-rule-head . (1 font-lock-variable-name-face t))
     (,rego-mode-keywords . font-lock-keyword-face)
     (,rego-mode-doubles . font-lock-constant-face)
     (,rego-mode-numerals . font-lock-constant-face)))
